@@ -2,7 +2,7 @@ name: docker-ci
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
 
 permissions:
@@ -15,7 +15,7 @@ jobs:
   build-test-scan:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Lint Dockerfile
@@ -39,7 +39,7 @@ jobs:
         run: |
           docker run -d --name api -p 5000:5000 ${{ env.IMAGE_NAME }}:${{ github.sha }}
           for i in {1..10}; do
-            if curl -fs http://localhost:5000/health; then
+            if curl -sf http://localhost:5000/health; then
               exit 0
             fi
             sleep 2
@@ -48,9 +48,9 @@ jobs:
           exit 1
 
       - name: Scan image with Trivy
-        uses: aquasecurity/trivy-action@v0.29.0
+        uses: aquasecurity/trivy-action@0.28.0
         with:
-          image-ref: ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          image-ref: '${{ env.IMAGE_NAME }}:${{ github.sha }}'
           format: 'table'
           severity: 'HIGH,CRITICAL'
           ignore-unfixed: true
