@@ -10,7 +10,7 @@ def home():
 @app.route("/health")
 def health():
     environment = os.getenv("APP_ENV", "dev")
-    return "ok", 200
+    return "ok", 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
